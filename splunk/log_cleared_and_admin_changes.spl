@@ -1,0 +1,7 @@
+``` High-signal Windows events: log cleared (1102), admin group membership (4728/4732/4756), scheduled task created (4698) ```
+index=wineventlog EventCode IN (1102, 4728, 4732, 4756, 4698)
+| eval activity=case(EventCode=1102, "Security log cleared",
+                     EventCode IN (4728,4732,4756), "Member added to group: ".Group_Name,
+                     EventCode=4698, "Scheduled task created: ".Task_Name)
+| table _time host EventCode activity Account_Name Subject_Account_Name
+| sort - _time

@@ -1,0 +1,24 @@
+title: New Local User Account Created On Linux
+id: 2a89a467-dd52-4438-aa31-f6170f99a196
+status: experimental
+description: |
+  Detects creation of a new local user via useradd/adduser. Attackers often create
+  accounts to keep access after the initial compromise.
+author: Kam'ron Washington
+date: 2026-10-23
+references:
+  - https://attack.mitre.org/techniques/T1136/001/
+tags:
+  - attack.persistence
+  - attack.t1136.001
+logsource:
+  product: linux
+  service: auth
+detection:
+  keywords:
+    - 'useradd['
+    - 'new user: name='
+  condition: keywords
+falsepositives:
+  - Legitimate administrator onboarding a user (verify against change tickets)
+level: medium

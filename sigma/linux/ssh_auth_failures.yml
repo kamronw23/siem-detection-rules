@@ -1,0 +1,29 @@
+title: SSH Authentication Failures From A Single Source
+id: 604f5b05-b9a3-413b-9fda-3c0bfc1a4581
+status: experimental
+description: |
+  Detects failed SSH password attempts and invalid-user probes in Linux auth logs.
+  Use this as the base event for a threshold alert (see splunk/ssh_bruteforce.spl):
+  many failures from one IP suggest brute force, and a later success from that IP suggests a compromise.
+author: Kam'ron Washington
+date: 2026-10-23
+references:
+  - https://attack.mitre.org/techniques/T1110/
+tags:
+  - attack.credential-access
+  - attack.t1110.001
+logsource:
+  product: linux
+  service: auth
+detection:
+  keywords:
+    - 'Failed password for'
+    - 'Invalid user'
+    - 'authentication failure'
+  filter_sshd:
+    - 'sshd['
+  condition: keywords and filter_sshd
+falsepositives:
+  - Users mistyping their password
+  - Misconfigured automation using stale credentials
+level: medium

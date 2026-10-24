@@ -1,0 +1,29 @@
+title: Windows Failed Logon - Network Or RDP
+id: 161b21af-ca23-464d-8735-e2acfeabc94a
+status: experimental
+description: |
+  Failed logons (Event ID 4625) over the network or RDP. Count these by source IP in the
+  SIEM (see splunk/windows_bruteforce.spl). Many distinct usernames from one IP points to
+  password spraying.
+author: Kam'ron Washington
+date: 2026-10-23
+references:
+  - https://attack.mitre.org/techniques/T1110/
+  - https://learn.microsoft.com/en-us/windows/security/threat-protection/auditing/event-4625
+tags:
+  - attack.credential-access
+  - attack.t1110.001
+  - attack.t1110.003
+logsource:
+  product: windows
+  service: security
+detection:
+  selection:
+    EventID: 4625
+    LogonType:
+      - 3
+      - 10
+  condition: selection
+falsepositives:
+  - Expired cached credentials on mapped drives or services
+level: low

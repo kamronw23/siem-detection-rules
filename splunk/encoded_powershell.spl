@@ -1,0 +1,8 @@
+``` Encoded PowerShell via Sysmon EID 1 or Security 4688, with the Base64 payload pulled out for decoding. ATT&CK T1059.001, T1027 ```
+index=* (sourcetype="XmlWinEventLog:Microsoft-Windows-Sysmon/Operational" EventCode=1) OR (sourcetype=WinEventLog:Security EventCode=4688)
+(Image="*\\powershell.exe" OR Image="*\\pwsh.exe" OR New_Process_Name="*\\powershell.exe")
+| eval cmd=coalesce(CommandLine, Process_Command_Line)
+| where match(cmd, "(?i)\s-(e|ec|enc|encodedcommand)\s")
+| rex field=cmd "(?i)\s-(?:e|ec|enc|encodedcommand)\s+(?<b64>[A-Za-z0-9+/=]{20,})"
+| table _time host user ParentImage cmd b64
+``` Decode b64 with CyberChef: From Base64 -> Decode text (UTF-16LE) ```

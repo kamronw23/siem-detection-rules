@@ -1,0 +1,33 @@
+title: Scheduled Task Created From Suspicious Location
+id: 7a45ed35-a273-45e3-8b38-74cbac501c8b
+status: experimental
+description: |
+  Event ID 4698 (scheduled task created) where the task runs something from a user-writable or temp path.
+  Scheduled tasks are a top persistence technique.
+author: Kam'ron Washington
+date: 2026-10-23
+references:
+  - https://attack.mitre.org/techniques/T1053/005/
+tags:
+  - attack.persistence
+  - attack.execution
+  - attack.t1053.005
+logsource:
+  product: windows
+  service: security
+detection:
+  selection:
+    EventID: 4698
+  suspicious_path:
+    TaskContent|contains:
+      - '\AppData\'
+      - '\Temp\'
+      - '\Users\Public\'
+      - '\ProgramData\'
+      - 'powershell'
+      - 'mshta'
+      - 'rundll32'
+  condition: selection and suspicious_path
+falsepositives:
+  - Software updaters that install into AppData (e.g. browsers, Teams)
+level: medium

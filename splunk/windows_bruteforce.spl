@@ -1,0 +1,7 @@
+``` Windows brute force / password spraying from EventCode 4625. ATT&CK T1110.001 / T1110.003 ```
+index=wineventlog EventCode=4625 (Logon_Type=3 OR Logon_Type=10)
+| bin _time span=15m
+| stats count AS failures dc(Account_Name) AS unique_accounts values(Account_Name) AS accounts BY _time Source_Network_Address
+| eval pattern=case(unique_accounts>=5, "password spraying", failures>=15, "brute force", true(), null())
+| where isnotnull(pattern)
+| sort - failures

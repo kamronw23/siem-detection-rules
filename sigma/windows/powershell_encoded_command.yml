@@ -1,0 +1,34 @@
+title: PowerShell Launched With Encoded Command
+id: d79a6c97-7586-45bb-a8b0-9059755229d1
+status: experimental
+description: |
+  Detects powershell.exe/pwsh.exe started with -EncodedCommand (or a short form such as -enc / -e).
+  Malware and loaders often encode commands in Base64 to hide them from casual inspection.
+author: Kam'ron Washington
+date: 2026-10-23
+references:
+  - https://attack.mitre.org/techniques/T1059/001/
+  - https://attack.mitre.org/techniques/T1027/
+tags:
+  - attack.execution
+  - attack.t1059.001
+  - attack.defense-evasion
+  - attack.t1027
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_img:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+  selection_cli:
+    CommandLine|contains:
+      - ' -enc '
+      - ' -encodedcommand '
+      - ' -e '
+      - ' -ec '
+  condition: selection_img and selection_cli
+falsepositives:
+  - Some management tools (SCCM, Intune scripts) use encoded commands; baseline and allowlist the parent process
+level: high
